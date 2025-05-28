@@ -1,0 +1,129 @@
+import requests
+import base64
+
+# Replace with your actual GitHub token and username
+github_username = "jesus12032007"
+repo_name = "fffsalinas-site"
+
+headers = {
+    "Authorization": f"token {token}",
+    "Accept": "application/vnd.github.v3+json"
+}
+
+# Step 1: Create the repository
+repo_data = {
+    "name": repo_name,
+    "description": "Website for fffsalinas trailer repair business",
+    "homepage": f"https://{github_username}.github.io/{repo_name}/",
+    "private": False,
+    "auto_init": True
+}
+
+create_repo = requests.post("https://api.github.com/user/repos", headers=headers, json=repo_data)
+print("Repository created:", create_repo.status_code)
+
+# Step 2: Define content for index.html and styles.css
+index_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>fffsalinas - Trailer Repair</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <header>
+    <h1>fffsalinas</h1>
+    <p>Professional Trailer Repair in Dallas, TX</p>
+  </header>
+
+  <nav>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+    <a href="#location">Location</a>
+  </nav>
+
+  <section id="services">
+    <h2>Our Services</h2>
+    <ul>
+      <li>Trailer Repair</li>
+    </ul>
+  </section>
+
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p>📞 Phone: <a href="tel:9723658580">972-365-8580</a></p>
+    <p>📧 Email: <a href="mailto:fffsalinas0615@gmail.com">fffsalinas0615@gmail.com</a></p>
+  </section>
+
+  <section id="location">
+    <h2>Location & Hours</h2>
+    <p>📍 Dallas, TX</p>
+    <p>🕒 Open Every Day: 6:00 PM – 10:00 PM</p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 fffsalinas - Trailer Repair Services</p>
+  </footer>
+</body>
+</html>
+"""
+
+styles_css = """body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f8f9fa;
+  color: #333;
+}
+
+header {
+  background: #222;
+  color: #fff;
+  text-align: center;
+  padding: 1.5em 0;
+}
+
+nav {
+  background: #444;
+  text-align: center;
+  padding: 0.5em;
+}
+
+nav a {
+  color: white;
+  margin: 0 1em;
+  text-decoration: none;
+}
+
+section {
+  max-width: 800px;
+  margin: 2em auto;
+  background: #fff;
+  padding: 2em;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+footer {
+  background: #222;
+  color: #fff;
+  text-align: center;
+  padding: 1em 0;
+}
+"""
+
+def upload_file(filename, content):
+    url = f"https://api.github.com/repos/{github_username}/{repo_name}/contents/{filename}"
+    encoded = base64.b64encode(content.encode()).decode()
+    data = {
+        "message": f"Add {filename}",
+        "content": encoded
+    }
+    response = requests.put(url, headers=headers, json=data)
+    print(f"{filename} upload status:", response.status_code)
+
+upload_file("index.html", index_html)
+upload_file("styles.css", styles_css)
+
+print(f"Visit your site at: https://{github_username}.github.io/{repo_name}/")
